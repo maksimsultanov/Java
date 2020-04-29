@@ -21,6 +21,7 @@ public class Flashcard {
             Card cards[] = new Card[n];
             scanner.nextLine();
             int j = 0;
+            int k = 0;
             for (int i = 0; i < n; i++) {
                 cards[i] = new Card();
                 cards[i].setCardNumber(i + 1);
@@ -54,14 +55,36 @@ public class Flashcard {
                 checkString = scanner.nextLine();
                 cards[i].setCardDifinition(checkString);
             }
-
-            for (int ii = 0; ii < n; ii++) {
-                System.out.println(cards[ii].getCardNumber());
-                System.out.println(cards[ii].getCardName());
-                System.out.println(cards[ii].getCardDifinition());
-            }
+            j = 0;
+            do {
+                System.out.println("Print the definition of \"" + cards[j].getCardNumber() + "\":");
+                System.out.print("> ");
+                checkString = scanner.nextLine();
+                flag = true;
+                k = 0;
+                if (cards[j].getCardDifinition().equals(checkString)) {
+                    System.out.println("Correct answer.");
+                }
+                else {
+                    do {
+                        if (k != j) {
+                            if (cards[k].getCardDifinition().equals(checkString)) {
+                                System.out.println("Wrong answer. The correct one is \"" + cards[k].getCardDifinition()
+                                + "\", you've just written the definition of \"" + cards[k].getCardName()
+                                + "\".");
+                                flag = false;
+                            }
+                        }
+                        k++;
+                    } while (flag && k<n);
+                    if (k >= n && flag) {
+                        System.out.println("Wrong answer. The correct one is \""+cards[j].getCardDifinition()+"\".");
+                    }
+                }
+                j++;
+            } while (j < n);
         } else {
-            System.out.println("No cards, stop programm.");
+            System.out.println("No cards, no game.");
         }
         scanner.close();
 
