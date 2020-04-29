@@ -19,11 +19,11 @@ public class Flashcard {
 // Класс Card содержит следующие методы:
 //     public Card() - конструктор класса, задаёт значения атрибутам number, definition, name
 //     public void setCardName(String name) - позволяет изменять значения атрибута name
-//     public void setCardNumber(int number)
-//     public void setCardDifinition(String definition)
-//     public String getCardName()
-//     public String getCardDifinition()
-//     public int getCardNumber()
+//     public void setCardNumber(int number) - позволяет изменять значения атрибута number
+//     public void setCardDifinition(String definition) - позволяет изменять значения атрибута definition
+//     public String getCardName() - возвращаяет значения атрибута name
+//     public String getCardDifinition() - возвращаяет значения атрибута number
+//     public int getCardNumber() - возвращаяет значения атрибута definition
 
 class Card {
     int number;
