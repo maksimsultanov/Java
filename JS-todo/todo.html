@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+    <div class="container">
+        <div class="block">
+            <div class="block__list">
+                
+            </div>
+
+            <div class="block__form">
+                <form action="">
+                    <input type="text" value="Enter text" class="block__input">
+                    <button type="submit" class="block__btn">add</button>
+                    <br>
+                    <div class="block__radio">
+                        <p class="block__p-complete"><input type="radio" name="todo_radio" class="block__radio-complete" value="complete">Завершенные</p>
+                        <p class="block__p-no-complete"><input type="radio" name="todo_radio" class="block__radio-no-complete" value="no complete">Не Завершенные</p>
+                        <p class="block__p-all"><input type="radio" name="todo_radio" class="block__radio-all" value="all" >Все</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="todo.js"></script>
+</body>
+</html>
