@@ -1,167 +1,205 @@
 window.onload = function () {
-    var input = document.querySelector(".block__input"); //variable input text
-    var btn = document.querySelector(".block__btn"); //variable btn
-    var blockList = document.querySelector(".block__list"); //variable content list
-    var radio = document.getElementsByName("todo_radio"); //get list of radio btn
-    var storageDo = []; //for exchange with local storage
-    var storageRadio = "all"; // for change  radio state
+    // ===========VARIABLE=GLOBAL============
+    // ================START=================
+    //create object for text input field
+    var input = document.querySelector(".block__input");
+    //create object for btn add
+    var btn = document.querySelector(".block__btn");
+    //create object for block text do
+    var blockList = document.querySelector(".block__list");
+    //create object for radio btn filer
+    var radio = document.getElementsByName("todo_radio");
+    // Temp arrays for Do and radio
+    var storageDo = [];
+    //tmp var for radio state
+    var storageRadio = "all";
+    // ===========VARIABLE=GLOBAL============
+    // =================END==================
 
-    for (var i = 0; i < radio.length; i++) {
-        radio[i].onclick = setRadio;
-    }
-
-    function setRadio() {
-        storageRadio = this.value;
+    // ===========FUNCTION=GLOBAL============
+    // ================START=================
+    // function write to local storage
+    function write_into_storage() {
         localStorage.setItem("DoRadio", JSON.stringify(storageRadio));
-        window.onload();
-    }
-
-    // clear before print new list
-    while (blockList.firstChild) {
-        blockList.removeChild(blockList.firstChild);
-    }
-
-    storageRadio = localStorage.getItem("DoRadio");
-    //if in localstorage exist DoList
-    if (localStorage.getItem("DoList") != undefined) {
-        storageDo = JSON.parse(localStorage.getItem("DoList")); // load todo list from local storage
-        if (storageRadio == "\"complete\"") {
-            for (let key in storageDo) {
-                //pritn only completed Do
-
-                if (storageDo[key].checkState == true) {
-                    createDo(storageDo[key].txtDo, storageDo[key].checkState);
-                }
-            }
-        } else if (storageRadio == "\"no complete\"") {
-            for (let key in storageDo) {
-                //pritn only completed Do
-                if (storageDo[key].checkState == false) {
-                    createDo(storageDo[key].txtDo, storageDo[key].checkState);
-                }
-            }
-        } else {
-            //print all do 
-            for (let key in storageDo) {
-                createDo(storageDo[key].txtDo, storageDo[key].checkState);
-            }
-        }
-    }
-
-
-    // ===Start===
-    function createDo(txt, checkState) {
-        var OneDo = {}; // tmp dict
-        var newDo = document.createElement("p"); //new Do objec
-        var deleteSpan = document.createElement("span"); // new span object for delete
-        var editeSpan = document.createElement("span"); // new span object for edit
-        var chBox = document.createElement("input"); //new input for checkbox
-        chBox.type = "checkbox"; //set type input as checkbox
-        chBox.className = "block__list-check"; // set class for checkbox
-        deleteSpan.className = "block__list-delete"; //class delete span
-        deleteSpan.textContent = "Delete"; // text for Delete span
-        editeSpan.className = "block__list-edite"; //class delete span
-        editeSpan.textContent = "Edite"; // text for Delete span
-        newDo.className = "block__list-do"; // new Do class
-        chBox.value = txt; //set value check box
-        newDo.textContent = chBox.value; //set text for Do
-        chBox.checked = checkState;
-        newDo.appendChild(chBox); //add checkbox
-        newDo.appendChild(deleteSpan); // add deletespan
-        newDo.appendChild(editeSpan); // add deletespan
-        //remember state chekboxes
-        chBox.addEventListener("click", function () {
-            // find Do in sorage wiht the same value of checkbox
-            for (var key in storageDo) {
-                if (storageDo[key].txtDo == chBox.value) {
-                    storageDo[key].checkState = chBox.checked;
-                }
-            }
-            write_to_localstorage();
-        });
-        //delete Do from list
-        deleteSpan.addEventListener("click", function () {
-            var deleteIndex; //index of delete Do
-            blockList.removeChild(newDo); //delete from html
-            //find index of delete Do
-            for (var key in storageDo) {
-                if (storageDo[key].txtDo == newDo.textContent) {
-                    deleteIndex = storageDo.indexOf(key);
-                }
-            }
-            storageDo.splice(deleteIndex, 1); // delete item from Do array
-            write_to_localstorage(); // rewrite localstorage
-        });
-        //edit Do
-        function applyEdite(editIndex) {
-            var notTheSameValue = true;
-            for (let key in storageDo) {
-                if (storageDo[key].txtDo == this.value) {
-                    notTheSameValue = false;
-                }
-            }
-            let ch = storageDo[editIndex].checkState;
-            if (!((this.value === "Enter text") || (this.value === "")) && notTheSameValue) {
-                // chBox.value = this.value; //set value check box
-                // newDo.textContent = this.value; //set text for Do
-                storageDo[editIndex] = createDo(this.value, ch); //create edite Do
-                write_to_localstorage(); //rewrite local storage
-                // this.remove();// edit input
-                window.onload();
-            }
-            // this.remove();// edit input
-        }
-        editeSpan.addEventListener("click", function () {
-            var editeInput = document.createElement("input");
-            let editeIndex;
-            editeInput.type = "text";
-            editeInput.className = "edite__input";
-            newDo.appendChild(editeInput);
-            for (let key in storageDo) {
-                if (storageDo[key].txtDo == txt) {
-                    editeIndex = storageDo.indexOf(key);
-                }
-            }
-            
-            editeInput.ondblclick = applyEdite(editeIndex);
-        });
-        blockList.appendChild(newDo); //add new Do
-        OneDo.txtDo = chBox.value;
-        OneDo.checkState = chBox.checked;
-        return OneDo;
-    }
-    // ===End===
-
-    // write to localStorage
-    function write_to_localstorage() {
         localStorage.setItem("DoList", JSON.stringify(storageDo));
     }
-
-
-    //add task into todo list
-    btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        var notTheSameValue = true;
-        for (var key in storageDo) {
-            if (storageDo[key].txtDo == input.value) {
-                notTheSameValue = false;
+    //function read from local storage
+    function read_from_storage() {
+        storageDo = JSON.parse(localStorage.getItem("DoList"));
+        storageRadio = JSON.parse(localStorage.getItem("DoRadio"));
+    }
+    // function cleare list Do on the form
+    function clear_listDo() {
+        while (blockList.firstChild) {
+            blockList.removeChild(blockList.firstChild);
+        }
+    }
+    // function for print DoList with filter
+    function filtered_printDo() {
+        if ((localStorage.getItem("DoList") != undefined)) {
+            // if DoList exist in local storage read it
+            read_from_storage();
+            if (storageRadio == "complete") {
+                // if filtered only complete Do
+                for (let key in storageDo) {
+                    if (storageDo[key].checkState) {
+                        createDo(storageDo[key].txtDo, storageDo[key].checkState);
+                    }
+                }
+            } else if (storageRadio == "no complete") {
+                for (let key in storageDo) {
+                // if filtered only no complete Do
+                if (!storageDo[key].checkState) {
+                        createDo(storageDo[key].txtDo, storageDo[key].checkState);
+                    }
+                }
+            } else if ((storageRadio == undefined) || (storageRadio == "all")) {
+                // if filtered all Do
+                for (let key in storageDo) {
+                    createDo(storageDo[key].txtDo, storageDo[key].checkState);
+                }
             }
         }
-        if (!((input.value === "Enter text") || (input.value === "")) && notTheSameValue) {
-            var i = storageDo.length; //get new last index of sterageDo
-            storageDo[i] = createDo(input.value, false); //create new Do
-            write_to_localstorage(); //rewrite local storage
-            input.value = "Enter text"; //return default value
+    }
+    // function create do and set queries for object
+    function createDo(txt, checkState) {
+        // temp dict for new do
+        let oneDo = {};
+        // new do object
+        let newDo = document.createElement("p");
+        // create text field for new Do
+        let text_newDo = document.createElement("input");
+        // create new span for delete
+        let deleteSpan = document.createElement("span");
+        // create new input for check box
+        let chBox = document.createElement("input");
+        // create edit span
+        let editSpan = document.createElement("span");
+        // set newDo class
+        newDo.className = "block__list-do";
+        // set text new Do
+        text_newDo.className = "block__list-do-input";
+        text_newDo.type = "text";
+        text_newDo.value = txt;
+        text_newDo.placeholder = txt;
+        // append text new Do to the new Do
+        newDo.appendChild(text_newDo);
+        // set chBox for new Do
+        chBox.className = "block__list-check";
+        chBox.type = "checkbox";
+        chBox.checked = checkState;
+        // append chBox to new Do
+        newDo.appendChild(chBox);
+        // create event listener for chekbox
+        chBox.addEventListener("click", function () {
+            // find the same element in sorage Do and remember it
+            for (let key in storageDo) {
+                if (storageDo[key].txtDo == this.parentElement.firstChild.value) {
+                    storageDo[key].checkState = this.checked;
+                }
+            }
+            // rewrite local storage
+            write_into_storage();
+        });
+        // set edit span
+        editSpan.className = "block__list-edite";
+        editSpan.textContent = "Save";
+        // append edit span
+        newDo.appendChild(editSpan);
+        // create event listener for edit span
+        editSpan.addEventListener("click", function(){
+            editInput = this.parentNode.querySelector(".block__list-do-input");
+            if (editInput.value != editInput.placeholder){
+                if (!(the_sameDo(editInput.value)) || (editInput.value == "")) {
+                    // if empty or the same Do return old text
+                    editInput.value = editInput.placeholder;
+                }
+                else {
+                    // find Do with old text and update it
+                    storageDo[storageDo.findIndex(ei => ei.txtDo == editInput.placeholder)].txtDo = editInput.value;
+                    editInput.placeholder = editInput.value;
+                    // rewrite local storage
+                    write_into_storage();
+                }
+            }
+        });
+        //set delete span
+        deleteSpan.className = "block__list-delete";
+        deleteSpan.textContent = "Delete";
+        // append deletespan into the new Do
+        newDo.appendChild(deleteSpan);
+        // create event listener for delete
+        deleteSpan.addEventListener("click", function () {
+            // delete from storageDo
+            storageDo.splice(storageDo.findIndex(x => x.txtDo == this.parentElement.firstChild.value), 1);
+            // rewrite local storage
+            write_into_storage();
+            // delete from block list
+            blockList.removeChild(this.parentNode);
+        });
+        // append new Do in the Do list
+        blockList.appendChild(newDo);
+        // append new do in the tmp dict
+        oneDo.txtDo = text_newDo.value;
+        oneDo.checkState = chBox.checked;
+        return oneDo;
+    }
+    // check exist the same Do
+    function the_sameDo(txt) {
+        let notTheSameDo = true;
+        // storageDo.forEach(oneDo => {
+        //     if (oneDo.txt == txt) {
+        //         notTheSameDo = false;
+        //     }
+        //     console.log(notTheSameDo);
+        // });
+        for (let key in storageDo) {
+            if (storageDo[key].txtDo == txt){
+                return false;
+            }
         }
-    });
-    // clear input when set focus
-    input.addEventListener("focus", function () {
-        input.value = "";
-    });
-    // set input when blur
-    input.addEventListener("blur", function () {
-        if (input.value === "") {
+        return notTheSameDo;
+    }
+    // function for set value radio
+    function setRadio() {
+        storageRadio = this.value;
+        write_into_storage();
+        window.onload();
+    }
+    // ===========FUNCTION=GLOBAL============
+    // =================END==================
+
+    // ===========EVENTS=GLOBAL============
+    // ================START===============
+    // event for radio btn
+    for (let i = 0; i < radio.length; i++) {
+        radio[i].onclick = setRadio;
+    }
+    // add task into todo list
+    btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (!((input.value === "Enter text") || (input.value === "")) && (the_sameDo(input.value))) {
+            let i = storageDo.length;
+            storageDo[i] = createDo(input.value, false);
+            write_into_storage();
             input.value = "Enter text";
         }
     });
+    // clr when set focus on input
+    input.addEventListener("focus", function () {
+        input.value = "";
+    });
+    input.addEventListener("blur", function () {
+        if (input.value == "") {
+            input.value = "Enter text";
+        }
+    });
+    // ===========EVENTS=GLOBAL============
+    // =================END================
+    
+    // all times on load
+    // clear list in document
+    clear_listDo();
+    // prin with radio options
+    filtered_printDo();
 }

@@ -133,3 +133,8 @@ body {
     margin-top: 1em;
     position: relative;
 }
+/* set stylese for input fields in list */
+.block__list-do-input {
+    border: none;
+    margin-bottom: 5px;
+}
